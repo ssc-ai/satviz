@@ -1,0 +1,9 @@
+/* Local CSS to ensure Cesium canvas fills the widget container */
+.satsim-root { width: 100%; display: block; }
+.satsim-container { width: 100%; height: 480px; position: relative; background: #000; }
+.satsim-container .cesium-widget,
+.satsim-container .cesium-viewer,
+.satsim-container .cesium-widget canvas,
+.satsim-container .cesium-viewer-cesiumWidgetContainer { width: 100% !important; height: 100% !important; }
+.satsim-container .cesium-widget canvas { display: block; max-width: none !important; }
+
