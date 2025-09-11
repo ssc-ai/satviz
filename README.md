@@ -1,4 +1,10 @@
-# satviz
+# SatViz
+
+SatSim source code was developed under contract with AFRL/RDSM, and is approved for public release under Public Affairs release approval #AFRL-2022-1116.
+
+The SatSimJS widget for Jupyter and Marimo.
+
+![alt text](image.png)
 
 ## Installation
 
@@ -12,24 +18,23 @@ or with [uv](https://github.com/astral-sh/uv):
 uv add satviz
 ```
 
-## Development
+## Usage
 
-We recommend using [uv](https://github.com/astral-sh/uv) for development.
-It will automatically manage virtual environments and dependencies for you.
+Jupyter
 
-```sh
-uv run jupyter lab example.ipynb
+```python
+from satviz import SatSimJS
+w = SatSimJS(height_px=1000)
+w
 ```
 
-Alternatively, create and manage your own virtual environment:
+Marimo
 
-```sh
-python -m venv .venv
-source .venv/bin/activate
-pip install -e ".[dev]"
-jupyter lab example.ipynb
+```python
+import marimo as mo
+from satviz import SatSimJS
+
+widget = SatSimJS(height_px=900)
+w = mo.ui.anywidget(widget)
+w
 ```
-
-Open `example.ipynb` in JupyterLab, VS Code, or your favorite editor
-to start developing. Changes made in `src/satviz/static/` will be reflected
-in the notebook.
