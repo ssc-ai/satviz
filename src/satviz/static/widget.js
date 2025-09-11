@@ -136,7 +136,7 @@ async function render({ model, el }) {
 
 		// Configure SatSim asset base dynamically (python trait `satsim_base`)
 		const _modelBase = (model && typeof model.get === 'function' && model.get('satsim_base')) || '';
-		const _defaultBase = 'https://cdn.jsdelivr.net/npm/satsim@0.12.0/dist';
+		const _defaultBase = 'https://cdn.jsdelivr.net/npm/satsim@0.13.0/dist';
 		const _base = String(_modelBase || _defaultBase).replace(/\/+$/, '');
 		window.CESIUM_BASE_URL = _base + '/';
 		await _loadScript(_base + '/satsim.js');
@@ -178,6 +178,14 @@ async function render({ model, el }) {
 			log.debug('trait changed (scenario)', 'scenario_data');
 			var data = model.get('scenario_data');
 			SatSim.Scenario.loadScenarioFromText(universe, viewer, data);
+			log.debug('scenario loaded');
+		});
+
+		// Dedicated clear-events hook driven from Python (increments a counter)
+		model.on('change:clear_events_seq', function () {
+			log.debug('trait changed (action)', 'clear_events_seq');
+			universe.events.clear();
+			log.debug('events cleared');
 		});
 
 		log.debug('viewer ready');

@@ -1,12 +1,22 @@
-"""Marimo integration for satellite visualization using Cesium."""
+"""AnyWidget wrapper for SatSimJS (Cesium-based) in Jupyter/Marimo.
+
+This package exposes a simple widget (`SatSimJS`) that loads the SatSim
+JavaScript bundle from a CDN and renders a Cesium-based universe.
+"""
 from __future__ import annotations
 
 from pathlib import Path
 from anywidget import AnyWidget
 from traitlets import Unicode, Int, Bool, Dict
+from importlib.metadata import PackageNotFoundError, version as _pkg_version
+
+try:  # Expose runtime package version
+    __version__ = _pkg_version("satviz")
+except PackageNotFoundError:  # During local dev/editable installs
+    __version__ = "0.0.0"
 
 # Default SatSim assets base (can be overridden per-widget via `satsim_base`)
-SATSIM_BASE = "https://cdn.jsdelivr.net/npm/satsim@0.12.0/dist"
+SATSIM_BASE = "https://cdn.jsdelivr.net/npm/satsim@0.13.0/dist"
 # SATSIM_BASE = "http://127.0.0.1:8080/dist"  # Local dev server serving satsimjs
 
 _PKG_DIR = Path(__file__).parent
@@ -35,6 +45,8 @@ class SatSimJS(AnyWidget):
             "showLowResEarth": True,
         }).tag(sync=True)
         debug = Bool(False).tag(sync=True)
+        # Action trigger: increment to clear events on the JS side
+        clear_events_seq = Int(0).tag(sync=True)
         height_px = Int(480).tag(sync=True)
 
         def __init__(
@@ -76,9 +88,17 @@ class SatSimJS(AnyWidget):
         def load_scenario_file(self, path: str | Path) -> None:
             self.scenario_data = _read_text(Path(path))
 
+        def clear_events(self) -> None:
+            """Clear queued events in the front-end without reloading scenario.
+
+            This increments a counter trait observed by the JS side and
+            triggers `universe.events.clear()` in the widget.
+            """
+            self.clear_events_seq += 1
+
         # Scenario export and validation
         def export_scenario(self, *, hours: int = 2) -> dict:
-            """Return the parsed DMAC scenario from scenario_data.
+            """Return the parsed scenario from scenario_data.
 
             If no scenario_data is set, returns a minimal skeleton with
             empty objects and events and a 2-hour window from now.
