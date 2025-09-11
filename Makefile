@@ -20,6 +20,7 @@ edit-marimo:
 	$(UV) run --group dev marimo edit examples/marimo_example.py
 
 build:
+	$(UV) pip install --upgrade build twine
 	$(UV) run python -m build
 	$(UV) run twine check dist/*
 
