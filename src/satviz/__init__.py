@@ -3,9 +3,11 @@ from __future__ import annotations
 
 from pathlib import Path
 from anywidget import AnyWidget
-from traitlets import Unicode, Int, Bool
+from traitlets import Unicode, Int, Bool, Dict
 
-SATSIM_BASE = "https://cdn.jsdelivr.net/npm/satsim@0.11.0/dist"
+# Default SatSim assets base (can be overridden per-widget via `satsim_base`)
+SATSIM_BASE = "https://cdn.jsdelivr.net/npm/satsim@0.12.0/dist"
+# SATSIM_BASE = "http://127.0.0.1:8080/dist"  # Local dev server serving satsimjs
 
 _PKG_DIR = Path(__file__).parent
 _STATIC_DIR = _PKG_DIR / "static"
@@ -21,18 +23,17 @@ class SatSimJS(AnyWidget):
         """
 
         # Load CSS/ESM from packaged files and inject URLs.
-        _css = (
-            _read_text(_STATIC_DIR / "widget.css")
-            .replace("__SATSIM_BASE__", SATSIM_BASE)
-        )
+        _css = _read_text(_STATIC_DIR / "widget.css")
 
-        _esm = (
-            _read_text(_STATIC_DIR / "widget.js")
-            .replace("__SATSIM_BASE__", SATSIM_BASE)
-        )
+        _esm = _read_text(_STATIC_DIR / "widget.js")
 
-        scenario_url = Unicode("").tag(sync=True)
         scenario_data = Unicode("").tag(sync=True)
+        satsim_base = Unicode(SATSIM_BASE).tag(sync=True)
+        viewer_options = Dict(default_value={
+            "showWeatherLayer": False,
+            "showNightLayer": False,
+            "showLowResEarth": True,
+        }).tag(sync=True)
         debug = Bool(False).tag(sync=True)
         height_px = Int(480).tag(sync=True)
 
@@ -40,38 +41,19 @@ class SatSimJS(AnyWidget):
             self,
             *args,
             scenario_path: str | Path | None = None,
-            scenario_url: str | None = None,
-            scenario_text: str | None = None,
             **kwargs,
         ):
-            # Initialization: explicit kwargs > scenario_text > scenario_path > scenario_url
-            if "scenario_data" not in kwargs and "scenario_url" not in kwargs:
-                if scenario_text:
-                    kwargs["scenario_data"] = str(scenario_text)
-                elif scenario_path:
+            # Initialization: explicit kwargs > scenario_path
+            if "scenario_data" not in kwargs:
+                if scenario_path:
                     try:
                         data = _read_text(Path(scenario_path))
                         if data:
                             kwargs["scenario_data"] = data
                     except Exception:
                         pass
-                elif scenario_url:
-                    kwargs["scenario_url"] = str(scenario_url)
             super().__init__(*args, **kwargs)
 
-        # Scenario-only helpers
-        def load_scenario_url(self, url: str) -> None:
-            self.scenario_url = str(url)
-            self.scenario_data = ""
-
-        def load_scenario(self, scenario: dict) -> None:
-            """Load a DMAC scenario from a Python dict.
-
-            Serializes the dict to JSON and stores it in the syncable
-            `scenario_data` trait so the front-end can consume it.
-            """
-            import json as _json
-            self.scenario_data = _json.dumps(scenario)
 
         # Convenience: embed TLE catalogs from Python (read file, inline as data)
         def add_tle_catalog_data(self, text: str, *, limit: int | None = None, orientation: str | None = None) -> None:
@@ -118,3 +100,7 @@ class SatSimJS(AnyWidget):
                 "objects": [],
                 "events": [],
             }
+
+__all__ = [
+    'SatSimJS',
+]
