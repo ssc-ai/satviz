@@ -28,6 +28,17 @@ w = SatSimJS(height_px=1000)
 w
 ```
 
+Marimo
+
+```python
+import marimo as mo
+from satviz import SatSimJS
+
+widget = SatSimJS(height_px=900)
+w = mo.ui.anywidget(widget)
+w
+```
+
 ## Release
 
 To build and publish a release to PyPI:
@@ -44,14 +55,3 @@ To build and publish a release to PyPI:
 3. Publish:
 
    - Manual: `twine upload dist/*` (requires a `__token__` PyPI API token)
-
-Marimo
-
-```python
-import marimo as mo
-from satviz import SatSimJS
-
-widget = SatSimJS(height_px=900)
-w = mo.ui.anywidget(widget)
-w
-```
