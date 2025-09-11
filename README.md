@@ -28,6 +28,23 @@ w = SatSimJS(height_px=1000)
 w
 ```
 
+## Release
+
+To build and publish a release to PyPI:
+
+1. Bump `version` in `pyproject.toml`.
+2. Build and validate locally:
+
+   ```sh
+   uv pip install --upgrade build twine
+   uv run python -m build
+   uv run twine check dist/*
+   ```
+
+3. Publish:
+
+   - Manual: `twine upload dist/*` (requires a `__token__` PyPI API token)
+
 Marimo
 
 ```python
