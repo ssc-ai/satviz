@@ -44,9 +44,21 @@ class SatSimJS(AnyWidget):
             "showNightLayer": False,
             "showLowResEarth": True,
         }).tag(sync=True)
+        # Fullscreen rectangle for windowed overlay; values can be numbers
+        # (interpreted as px) or CSS strings (e.g., '64px', 'calc(100vh-96px)').
+        fullscreen_rect = Dict(default_value={
+            "top": 0,
+            "left": 0,
+            "width": "100vw",
+            "height": "100vh",
+            "zIndex": 999999,
+        }).tag(sync=True)
         debug = Bool(False).tag(sync=True)
         # Action trigger: increment to clear events on the JS side
         clear_events_seq = Int(0).tag(sync=True)
+        # Preferred height as CSS string (e.g., '480px', 'calc(100vh - 80px)')
+        height = Unicode("480px").tag(sync=True)
+        # Backward-compat numeric height in pixels; JS will honor `height` first
         height_px = Int(480).tag(sync=True)
 
         def __init__(
