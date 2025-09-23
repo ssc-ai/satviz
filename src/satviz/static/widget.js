@@ -146,6 +146,20 @@ async function render({ model, el }) {
 		error: (...a) => { try { console.error('[satviz]', ...a); } catch (_) { } },
 	};
 
+	log.debug('render start');
+
+	function emitSelection(picked) {
+		log.debug('object picked', picked && picked.name);
+		if (picked) {
+			const value = picked.name
+			model.set('selected_object', value)
+		} else {
+			model.set('selected_object', '')
+		}
+		model.save_changes()
+		log.debug('selected_object trait updated');
+	}
+
 	try {
 
 
@@ -168,6 +182,27 @@ async function render({ model, el }) {
 		var vopts = (model && typeof model.get === 'function' && model.get('viewer_options')) || {};
 		try { if (typeof vopts === 'string') vopts = JSON.parse(vopts || '{}'); } catch (_) { vopts = {}; }
 		var viewer = SatSim.createViewer(container, universe, vopts);
+		viewer.objectPickListener = function (picked, _lastPicked) {
+			emitSelection(picked);
+		};
+		
+		model.on('change:selected_object', function () {
+			if (!viewer || !viewer.entities) return;
+			var name = (model.get('selected_object') || '').trim();
+			var values = viewer.entities.values || [];
+			var match = null;
+			if (name) {
+				for (var i = 0; i < values.length; i += 1) {
+					var entity = values[i];
+					if (!entity) continue;
+					if ((entity.name || '').trim() === name) { match = entity; break; }
+					if (entity.simObjectRef && (entity.simObjectRef.name || '').trim() === name) { match = entity; break; }
+				}
+			}
+			viewer.selectedEntity = match || undefined;
+			// viewer.trackedEntity = match || undefined;
+			viewer.lastPicked = match ? (match.simObjectRef || match) : undefined;
+		});
 
 		// Fullscreen overlay rect (top, left, width, height, zIndex)
 		var rect = (model && typeof model.get === 'function' && model.get('fullscreen_rect')) || { top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 999999 };
@@ -218,7 +253,7 @@ async function render({ model, el }) {
 			log.debug('events cleared');
 		});
 
-		log.debug('viewer ready');
+		log.debug('render done');
 
 	} catch (error) {
 		log.error('init error', error);

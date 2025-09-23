@@ -60,6 +60,7 @@ class SatSimJS(AnyWidget):
         height = Unicode("480px").tag(sync=True)
         # Backward-compat numeric height in pixels; JS will honor `height` first
         height_px = Int(480).tag(sync=True)
+        selected_object = Unicode().tag(sync=True)
 
         def __init__(
             self,
