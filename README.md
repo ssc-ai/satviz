@@ -20,6 +20,8 @@ uv add satviz
 
 ## Usage
 
+SatViz loads SatSimJS from `https://cdn.jsdelivr.net/npm/satsim@0.15.0/dist` by default. Override `satsim_base` to point at a mirrored or locally served SatSimJS bundle that contains `satsim.js` and Cesium assets.
+
 Jupyter
 
 ```python
@@ -27,6 +29,8 @@ from satviz import SatSimJS
 w = SatSimJS(height="1000px")
 w
 ```
+
+SatViz is a browser-embedded scenario widget. It does not wrap SatSimJS `SimulationRuntime`; applications that need authoritative sessions, runtime commands, or external control should run that SatSimJS runtime separately.
 
 Marimo
 
@@ -37,6 +41,30 @@ from satviz import SatSimJS
 widget = SatSimJS(height="900px")
 w = mo.ui.anywidget(widget)
 w
+```
+
+## Example Notebook
+
+From a checkout of this repository, install the development dependencies:
+
+```sh
+uv sync --group dev
+```
+
+The example notebook reads `SATSIM_BASE` from the environment and defaults to `http://127.0.0.1:8080/dist` for local development.
+
+For local SatSimJS development, serve the SatSimJS repository root in a separate terminal:
+
+```sh
+cd $SATSIMJS_PATH
+npm run build:cdn
+npm run serve
+```
+
+Then open the notebook:
+
+```sh
+SATSIM_BASE=http://127.0.0.1:8080/dist uv run --group dev env PATH="$PWD/.venv/bin" jupyter lab examples/satviz_example.ipynb
 ```
 
 ### Configuring fullscreen rectangle
@@ -63,8 +91,9 @@ w
 
 To build and publish a release to PyPI:
 
-1. Bump `version` in `pyproject.toml`.
-2. Build and validate locally:
+1. Confirm `satsim@0.15.0` has been published to npm/jsDelivr.
+2. Bump `version` in `pyproject.toml`.
+3. Build and validate locally:
 
    ```sh
    uv pip install --upgrade build twine
@@ -72,6 +101,6 @@ To build and publish a release to PyPI:
    uv run twine check dist/*
    ```
 
-3. Publish:
+4. Publish:
 
    - Manual: `twine upload dist/*` (requires a `__token__` PyPI API token)

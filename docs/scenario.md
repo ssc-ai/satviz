@@ -54,7 +54,7 @@ Supported `type` values (case-insensitive):
 - TLE Catalog (multiple satellites)
   - `type`: `"TLECatalog"` | `"TLEs"` | `"TLEList"`
   - Fields:
-    - `text: string` — Inline TLE text (2‑line or 3‑line format).
+    - `data | text: string` — Inline TLE text (2‑line or 3‑line format).
     - `url: string` — If no inline data, fetch from this URL/path.
     - `limit: number` — Maximum satellites to add (default `500000`).
     - `orientation: string` — Orientation for created satellites.
@@ -83,9 +83,31 @@ Supported `type` values (case-insensitive):
   - Fields: `observer: string`, `target: string | null`
   - Sets the observer’s gimbal to track the target at the event time. Use `null` to stop tracking.
 
-- `"pointGimbal"`
-  - Fields: `observer: string`, `az: number`, `el: number` (degrees)
+- `"setGimbalAxes"`
+  - Fields: `observer: string`, `axes: {"az": number, "el": number}`
   - Sets the observer gimbal to a fixed azimuth/elevation.
+
+- `"stepGimbalAxes"`
+  - Fields: `observer: string`, `axes | deltas: object`
+  - Steps one or more gimbal axes by degrees.
+
+- `"setFsmAxes"` / `"stepFsmAxes"`
+  - Fields: `observer: string`, `axes | deltas: {"tip": number, "tilt": number}`
+  - Sets or steps fast steering mirror axes.
+
+- `"setSensorZoom"` / `"stepSensorZoom"`
+  - Fields: `observer: string`, optional `sensor: string`, and `zoomLevel` or `deltaZoomLevel`.
+  - Sets or steps normalized sensor zoom.
+
+- `"setDirectedEnergyActive"`
+  - Fields: `observer: string`, `device | sensor: string`, `active: boolean`
+  - Enables or disables a laser payload.
+
+- `"airVehicleManeuver"`, `"setAirVehicleVelocityNed"`, `"setAirVehicleAccelerationNed"`, `"setAirVehicleHeading"`
+  - Fields: `object | vehicle | name | target: string` plus the command-specific velocity, acceleration, or heading fields.
+  - Mutates an air vehicle at the event time.
+
+Runtime-only rate commands such as `"setGimbalAxisRates"`, `"setFsmAxisRates"`, and `"setSensorZoomRate"` are not valid scheduled scenario events. Legacy SatViz `"pointGimbal"` events are normalized to `"setGimbalAxes"` for compatibility, but new scenarios should use canonical command names.
 
 Color Specification
 
@@ -127,8 +149,10 @@ End-to-End Example
     }
   ],
   "events": [
-    { "time": 120, "type": "pointGimbal", "observer": "Kauai", "az": 45, "el": 30 },
+    { "time": 120, "type": "setGimbalAxes", "observer": "Kauai", "axes": { "az": 45, "el": 30 } },
     { "time": 600, "type": "trackObject", "observer": "Kauai", "target": "ISS (ZARYA)" }
   ]
 }
 ```
+
+SatViz is a browser scenario widget and does not wrap SatSimJS `SimulationRuntime`. Use SatSimJS runtime separately when a workflow needs authoritative sessions, runtime snapshots, or command streams.

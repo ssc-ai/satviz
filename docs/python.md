@@ -35,7 +35,7 @@ Class: `satviz.SatSimJS`
 
 - Traits (sync to JS)
   - `scenario_data: str` — Raw scenario JSON string. Updating this reloads the scenario.
-  - `satsim_base: str` — Base URL for SatSim assets; defaults to `https://cdn.jsdelivr.net/npm/satsim@0.14.1/dist`.
+  - `satsim_base: str` — Base URL for SatSim assets; defaults to `https://cdn.jsdelivr.net/npm/satsim@0.15.0/dist`. Override this for local development, for example `http://127.0.0.1:8081/dist`.
   - `viewer_options: dict` — Options forwarded to SatSimJS `createViewer`.
     - Recognized keys include:
       - `showLowResEarth: bool` — Use built-in low-res basemap.
@@ -125,7 +125,7 @@ scenario["objects"] = [
 
 # Queue some events
 scenario["events"] = [
-    {"time": 120, "type": "pointGimbal", "observer": "Kauai", "az": 45, "el": 30},
+    {"time": 120, "type": "setGimbalAxes", "observer": "Kauai", "axes": {"az": 45, "el": 30}},
     {"time": 600, "type": "trackObject", "observer": "Kauai", "target": "ISS (ZARYA)"},
 ]
 
@@ -137,3 +137,5 @@ Notes
 - `scenario_data` updates trigger a full reload in the widget. For smoother updates, prefer batching edits in Python and assigning a single JSON string.
 - `selected_object` matches either the entity name or the underlying simulation object name; set to an empty string to clear selection.
 - The widget loads SatSimJS and Cesium from `satsim_base`; offline/mirrored hosting is supported by pointing to a local bundle that exposes `satsim.js` and Cesium `Widgets/widgets.css`.
+- Scenario events should use SatSimJS command-refactor names such as `setGimbalAxes`, `stepGimbalAxes`, `trackObject`, `setFsmAxes`, `setSensorZoom`, `setDirectedEnergyActive`, and air-vehicle commands. Runtime-only rate commands are not valid scheduled scenario events.
+- SatViz does not wrap SatSimJS `SimulationRuntime`; use a separate SatSimJS runtime server/client for authoritative sessions and runtime command streams.

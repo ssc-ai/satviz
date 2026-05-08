@@ -2,10 +2,8 @@ node_modules
 .venv
 dist
 .DS_Store
-examples
 
 # Python
 __pycache__
 .ipynb_checkpoints
-
 
