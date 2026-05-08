@@ -1,7 +1,8 @@
-.PHONY: help setup test test-python test-js test-available run-marimo edit-marimo build clean
+.PHONY: help setup test test-python test-js test-available run-jupyter run-marimo edit-marimo build clean
 
 UV ?= uv
 DENO ?= deno
+SATSIM_BASE ?= http://127.0.0.1:8080/dist
 
 help:
 	@echo "Targets:"
@@ -10,6 +11,7 @@ help:
 	@echo "  test-python       - Run Python tests"
 	@echo "  test-js           - Run Deno JavaScript tests"
 	@echo "  test-available    - Run Python tests and JS tests when Deno is installed"
+	@echo "  run-jupyter       - Launch the Jupyter notebook example"
 	@echo "  run-marimo        - Run Marimo example with uv dev group"
 	@echo "  edit-marimo       - Edit Marimo example with uv dev group"
 	@echo "  build             - Build and validate distribution packages"
@@ -33,6 +35,9 @@ test-available: test-python
 	else \
 		echo "Skipping JavaScript tests because Deno is not installed."; \
 	fi
+
+run-jupyter:
+	SATSIM_BASE=$(SATSIM_BASE) $(UV) run --group dev env PATH="$(PWD)/.venv/bin:$$PATH" jupyter lab examples/satviz_example.ipynb
 
 run-marimo:
 	$(UV) run --group dev marimo run examples/marimo_example.py
