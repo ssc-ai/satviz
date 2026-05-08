@@ -16,7 +16,7 @@ except PackageNotFoundError:  # During local dev/editable installs
     __version__ = "0.0.0"
 
 # Default SatSim assets base (can be overridden per-widget via `satsim_base`)
-SATSIM_BASE = "https://cdn.jsdelivr.net/npm/satsim@0.13.0/dist"
+SATSIM_BASE = "https://cdn.jsdelivr.net/npm/satsim@0.15.0/dist"
 # SATSIM_BASE = "http://127.0.0.1:8080/dist"  # Local dev server serving satsimjs
 
 _PKG_DIR = Path(__file__).parent
@@ -122,7 +122,7 @@ class SatSimJS(AnyWidget):
                     return json.loads(self.scenario_data)
                 except Exception:
                     pass
-            start_dt = datetime.datetime.utcnow().replace(microsecond=0)
+            start_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
             end_dt = start_dt + datetime.timedelta(hours=hours)
             return {
                 "simulationParameters": {
