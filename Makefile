@@ -36,8 +36,11 @@ test-available: test-python
 		echo "Skipping JavaScript tests because Deno is not installed."; \
 	fi
 
-run-jupyter:
+run-jupyter-local:
 	SATSIM_BASE=$(SATSIM_BASE) $(UV) run --group dev env PATH="$(PWD)/.venv/bin:$$PATH" jupyter lab examples/satviz_example.ipynb
+
+run-jupyter:
+	$(UV) run --group dev env PATH="$(PWD)/.venv/bin:$$PATH" jupyter lab examples/satviz_example.ipynb
 
 run-marimo:
 	$(UV) run --group dev marimo run examples/marimo_example.py

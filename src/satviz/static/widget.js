@@ -1,4 +1,4 @@
-const DEFAULT_SATSIM_BASE = 'https://cdn.jsdelivr.net/npm/satsim@0.15.0/dist';
+const DEFAULT_SATSIM_BASE = 'https://cdn.jsdelivr.net/npm/satsim@0.15.1/dist';
 
 function _isPlainObject(value) {
 	return !!value && typeof value === 'object' && !Array.isArray(value);

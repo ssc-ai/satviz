@@ -11,7 +11,7 @@ class SatSimJSTest(unittest.TestCase):
         widget = SatSimJS()
         self.assertEqual(
             widget.satsim_base,
-            "https://cdn.jsdelivr.net/npm/satsim@0.15.0/dist",
+            "https://cdn.jsdelivr.net/npm/satsim@0.15.1/dist",
         )
 
     def test_export_scenario_returns_existing_json(self):

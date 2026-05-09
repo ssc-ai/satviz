@@ -16,7 +16,7 @@ except PackageNotFoundError:  # During local dev/editable installs
     __version__ = "0.0.0"
 
 # Default SatSim assets base (can be overridden per-widget via `satsim_base`)
-SATSIM_BASE = "https://cdn.jsdelivr.net/npm/satsim@0.15.0/dist"
+SATSIM_BASE = "https://cdn.jsdelivr.net/npm/satsim@0.15.1/dist"
 # SATSIM_BASE = "http://127.0.0.1:8080/dist"  # Local dev server serving satsimjs
 
 _PKG_DIR = Path(__file__).parent

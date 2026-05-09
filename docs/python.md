@@ -35,7 +35,7 @@ Class: `satviz.SatSimJS`
 
 - Traits (sync to JS)
   - `scenario_data: str` — Raw scenario JSON string. Updating this reloads the scenario.
-  - `satsim_base: str` — Base URL for SatSim assets; defaults to `https://cdn.jsdelivr.net/npm/satsim@0.15.0/dist`. Override this for local development, for example `http://127.0.0.1:8081/dist`.
+  - `satsim_base: str` — Base URL for SatSim assets; defaults to `https://cdn.jsdelivr.net/npm/satsim@0.15.1/dist`. Override this for local development, for example `http://127.0.0.1:8081/dist`.
   - `viewer_options: dict` — Options forwarded to SatSimJS `createViewer`.
     - Recognized keys include:
       - `showLowResEarth: bool` — Use built-in low-res basemap.

@@ -20,7 +20,7 @@ uv add satviz
 
 ## Usage
 
-SatViz loads SatSimJS from `https://cdn.jsdelivr.net/npm/satsim@0.15.0/dist` by default. Override `satsim_base` to point at a mirrored or locally served SatSimJS bundle that contains `satsim.js` and Cesium assets.
+SatViz loads SatSimJS from `https://cdn.jsdelivr.net/npm/satsim@0.15.1/dist` by default. Override `satsim_base` to point at a mirrored or locally served SatSimJS bundle that contains `satsim.js` and Cesium assets.
 
 Jupyter
 
@@ -91,7 +91,7 @@ w
 
 To build and publish a release to PyPI:
 
-1. Confirm `satsim@0.15.0` has been published to npm/jsDelivr.
+1. Confirm `satsim@0.15.1` has been published to npm/jsDelivr.
 2. Bump `version` in `pyproject.toml`.
 3. Build and validate locally:
 
